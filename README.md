@@ -1,3 +1,3 @@
 # EasyClassPath_JavaFx
 
-測試
+clone專案後，config檔放在target資料夾中才可以讀取到
