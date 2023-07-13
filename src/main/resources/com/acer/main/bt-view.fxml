@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="402.0" prefWidth="491.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.acer.main.controller.BTController">
+      <top>
+         <MenuBar fx:id="menubar" BorderPane.alignment="CENTER">
+           <menus>
+             <Menu fx:id="file_menu" mnemonicParsing="false" text="檔案">
+               <items>
+                 <MenuItem fx:id="open_menuitem" mnemonicParsing="false" text="選取專案路徑" />
+               </items>
+             </Menu>
+             <Menu fx:id="other_menu" mnemonicParsing="false" text="其他">
+               <items>
+                 <MenuItem fx:id="about_menuitem" mnemonicParsing="false" text="關於本程式" />
+               </items>
+             </Menu>
+           </menus>
+         </MenuBar>
+      </top>
+      <center>
+         <VBox prefHeight="300.0" prefWidth="320.0" BorderPane.alignment="CENTER">
+            <children>
+            <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                <children>
+                  <ComboBox fx:id="ide_combobox" prefWidth="110.0">
+                     <HBox.margin>
+                        <Insets left="10.0" right="5.0" top="9.0" />
+                     </HBox.margin>
+                  </ComboBox>
+                    <Label styleClass="centered-label" text="專案路徑：">
+                        <HBox.margin>
+                            <Insets bottom="5.0" top="10.0" />
+                        </HBox.margin>
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                    </Label>
+                    <TextField id="path_text" fx:id="path_text" promptText="預設路徑：..." HBox.hgrow="ALWAYS">
+                        <HBox.margin>
+                            <Insets bottom="5.0" right="10.0" top="10.0" />
+                        </HBox.margin>
+                    </TextField>
+                </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </HBox>
+            <VBox prefHeight="600.0" prefWidth="100.0">
+               <children>
+                     <SplitPane dividerPositions="0.5" VBox.vgrow="ALWAYS">
+                       <items>
+                        <TabPane minWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+                          <tabs>
+                            <Tab text="單筆查詢">
+                              <content>
+                                <AnchorPane prefHeight="200.0" prefWidth="100.0">
+                                       <children>
+                                          <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <children>
+                                                <HBox>
+                                                   <children>
+                                                      <TextField fx:id="filename_text" promptText="請輸入檔名..." HBox.hgrow="ALWAYS">
+                                                         <HBox.margin>
+                                                            <Insets bottom="5.0" left="5.0" top="5.0" />
+                                                         </HBox.margin>
+                                                         <font>
+                                                            <Font size="14.0" />
+                                                         </font>
+                                                      </TextField>
+                                                      <Button fx:id="search_button" alignment="CENTER" contentDisplay="RIGHT" minWidth="80.0" onAction="#onSearchClick" text="搜尋">
+                                                         <HBox.margin>
+                                                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                         </HBox.margin>
+                                                         <font>
+                                                            <Font size="14.0" />
+                                                         </font>
+                                                      </Button>
+                                                   </children>
+                                                </HBox>
+                                                <TableView fx:id="realpath_tableview" VBox.vgrow="ALWAYS" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </AnchorPane>
+                              </content>
+                            </Tab>
+                            <Tab text="多筆匯入">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <VBox alignment="TOP_RIGHT" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <children>
+                                                <Button fx:id="import_button" alignment="CENTER" minWidth="80.0" mnemonicParsing="false" onAction="#onImportClick" text="匯入" VBox.vgrow="ALWAYS">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                   <VBox.margin>
+                                                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                   </VBox.margin>
+                                                </Button>
+                                                <TextArea fx:id="filename_textarea" prefHeight="200.0" prefWidth="200.0" promptText="輸入檔名(含副檔名)並換行" VBox.vgrow="ALWAYS">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                </TextArea>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </AnchorPane>
+                              </content>
+                            </Tab>
+                          </tabs>
+                        </TabPane>
+                           <VBox prefWidth="200.0">
+                              <children>
+                                 <HBox prefHeight="33.0" prefWidth="156.0">
+                                    <children>
+                                       <CheckBox fx:id="sourcecode_checkbox" minWidth="-Infinity" mnemonicParsing="false" text="輸出所有原始檔(包含.java)到">
+                                       <HBox.margin>
+                                          <Insets bottom="7.0" left="5.0" right="5.0" top="8.0" />
+                                       </HBox.margin>
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </CheckBox>
+                                    <ComboBox fx:id="sourcecode_combobox" prefWidth="120.0">
+                                       <HBox.margin>
+                                          <Insets bottom="5.0" right="5.0" top="5.0" />
+                                       </HBox.margin>
+                                    </ComboBox>
+                                    </children>
+                                 </HBox>
+                              <TableView fx:id="tomcatpath_tableview" VBox.vgrow="ALWAYS" />
+                              </children>
+                           </VBox>
+                       </items>
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                     </SplitPane>
+               </children>
+               <VBox.margin>
+                  <Insets left="5.0" right="5.0" />
+               </VBox.margin>
+            </VBox>
+                <HBox alignment="BOTTOM_RIGHT">
+                    <children>
+                        <Button fx:id="clearconsole_button" onAction="#onClearConsoleClick" text="清除Console">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                            <HBox.margin>
+                                <Insets bottom="10.0" left="10.0" top="5.0" />
+                            </HBox.margin>
+                        </Button>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button fx:id="clear_button" onAction="#onClearClick" text="清空列表">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                            <HBox.margin>
+                                <Insets bottom="10.0" right="10.0" top="5.0" />
+                            </HBox.margin>
+                        </Button>
+                        <Button fx:id="export_button" onAction="#onExportClick" text="輸出檔案">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                            <HBox.margin>
+                                <Insets bottom="10.0" right="10.0" top="5.0" />
+                            </HBox.margin>
+                        </Button>
+                    </children>
+                    <HBox.margin>
+                        <Insets right="10.0" top="5.0" />
+                    </HBox.margin>
+                </HBox>
+            </children>
+         </VBox>
+      </center>
+   <bottom>
+       <TitledPane animated="false" maxHeight="150.0" text="Console" BorderPane.alignment="CENTER">
+           <content>
+               <AnchorPane fx:id="console_anchorpane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                   <children>
+                       <TextArea fx:id="console_textarea" editable="false" promptText="訊息..." />
+                   </children>
+               </AnchorPane>
+           </content>
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" />
+         </BorderPane.margin>
+       </TitledPane>
+   </bottom>
+   </BorderPane>
