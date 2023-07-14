@@ -1,17 +1,19 @@
 package com.acer.main.controller;
 
 import com.acer.main.bean.ProjectFile;
-import com.acer.main.fxml.tableview.ItemListener;
+import com.acer.main.fxml.anchorpane.ConsoleAnchorPane;
+import com.acer.main.fxml.combobox.IDEComboBox;
+import com.acer.main.fxml.combobox.SourceCodeComboBox;
+import com.acer.main.fxml.fxmlinterface.ComboBoxListener;
+import com.acer.main.fxml.fxmlinterface.TableViewListener;
 import com.acer.main.fxml.menu.FileMenu;
 import com.acer.main.fxml.menu.OtherMenu;
-import com.acer.main.fxml.tableview.RealPathTableView;
-import com.acer.main.fxml.tableview.TomcatPathTableView;
+import com.acer.main.fxml.tableview.RealPathTableFxml;
+import com.acer.main.fxml.tableview.TomcatPathTableFxml;
 import com.acer.main.model.folder.Folder;
 import com.acer.main.model.folder.ProjectFolder;
 import com.acer.main.model.folder.SourceCodeFolder;
 import com.acer.main.service.*;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -73,53 +75,23 @@ public class BTController {
      */
     //這是JavaFX在Controller提供的方法，會先執行建構子再執行initialize()
     public void initialize() {
-        setFileMenu();
-        setOtherMenu();
-        setConsoleAnchorpane();
-        setIDECombobox();
-        setSourceCodeCombobox();
+        new FileMenu(open_menuitem, stage, path_text).handle();
+        new OtherMenu(about_menuitem).handle();
+        new ConsoleAnchorPane(console_anchorpane, console_textarea).handle();
+        new SourceCodeComboBox(sourcecode_combobox).handle();
+        new IDEComboBox(ide_combobox, new ComboBoxListener() {
+            @Override
+            public void callback() {
+                setPathPromteText();
+            }
+        }).handle();
         setExportButtonDisableStatus();
-    }
-
-    //設置選擇資料夾
-    private void setFileMenu() {
-        open_menuitem.setOnAction(e -> new FileMenu(this.stage, path_text).handle());
-    }
-
-    //設置關於本程式
-    private void setOtherMenu() {
-        about_menuitem.setOnAction(e -> new OtherMenu().handle());
-    }
-
-    //設置邊界，讓console_textarea占滿整個console_anchorpane
-    private void setConsoleAnchorpane() {
-        console_anchorpane.setTopAnchor(console_textarea, -10.0);
-        console_anchorpane.setBottomAnchor(console_textarea, -10.0);
-        console_anchorpane.setLeftAnchor(console_textarea, -10.0);
-        console_anchorpane.setRightAnchor(console_textarea, -10.0);
-    }
-
-    //設置IDE格式的選項(SearchTool內部判斷檔案路徑要用)
-    private void setIDECombobox() {
-        ObservableList<String> data = FXCollections.observableArrayList("Intellij IDEA", "Eclipse");
-        ide_combobox.setItems(data);
-        ide_combobox.valueProperty().addListener((observable, oldValue, newValue) -> setPathPromteText());
-        //設置combobox預設index為0，代表預設"Intellij IDEA"
-        ide_combobox.getSelectionModel().select(0);
     }
 
     //設置預設路徑
     private void setPathPromteText() {
         BTService.setIDE(ide_combobox.getSelectionModel().getSelectedIndex());
         path_text.setPromptText("預設路徑：" + BTService.getDefaultPath());
-    }
-
-    //設置原始檔案(含.java檔)匯出的選項
-    private void setSourceCodeCombobox() {
-        ObservableList<String> data = FXCollections.observableArrayList("同一資料夾", "原專案路徑");
-        sourcecode_combobox.setItems(data);
-        //設置combobox預設index為0，代表預設"同一資料夾"
-        sourcecode_combobox.getSelectionModel().select(0);
     }
 
     //設置export_button是否可點選
@@ -168,24 +140,18 @@ public class BTController {
     @FXML
     protected void onExportClick(ActionEvent actionEvent) {
         setSourceCodeOnOff(sourcecode_checkbox.isSelected(), sourcecode_combobox.getSelectionModel().getSelectedIndex());
-        StringBuilder sb = new StringBuilder();
-        sb.append(consoleService.exportFile(tomcatpath_tableview.getItems()));
-        sb.append(consoleService.deleteFolder());
-        sb.append(consoleService.copyFile(tomcatpath_tableview.getItems(), folderMap));
-        sb.append(consoleService.createTxt(folderMap));
-        sb.append(consoleService.createZip());
-        sb.append(consoleService.exportFinish());
-        sb.append(consoleService.openFolder());
-        console_textarea.appendText(sb.toString());
+        StringBuilder console = exportFileAndCreateConsole();
+        console_textarea.appendText(console.toString());
     }
 
     @FXML
     protected void onClearClick(ActionEvent actionEvent) {
+        filename_text.clear();
+        filename_textarea.clear();
         realpath_tableview.getItems().clear();
         tomcatpath_tableview.getItems().clear();
-        filename_textarea.clear();
-        setExportButtonDisableStatus();
         console_textarea.appendText(consoleService.clearList());
+        setExportButtonDisableStatus();
     }
 
     @FXML
@@ -197,7 +163,7 @@ public class BTController {
      * 內部呼叫方法
      */
     private void setRealPathTableView(List list) {
-        new RealPathTableView(realpath_tableview, list, new ItemListener() {
+        new RealPathTableFxml(realpath_tableview, list, new TableViewListener() {
             @Override
             public void callback(MouseEvent event, TableRow row) {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
@@ -206,11 +172,11 @@ public class BTController {
                     setExportButtonDisableStatus();
                 }
             }
-        }).show();
+        }).handle();
     }
 
     private void setTomcatPathTableView(Object item) {
-        new TomcatPathTableView(tomcatpath_tableview, item, new ItemListener() {
+        new TomcatPathTableFxml(tomcatpath_tableview, item, new TableViewListener() {
             @Override
             public void callback(MouseEvent event, TableRow row) {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
@@ -219,10 +185,9 @@ public class BTController {
                     setExportButtonDisableStatus();
                 }
             }
-        }).show();
+        }).handle();
     }
 
-    //設置是否要輸出SourceCode
     private void setSourceCodeOnOff(boolean selected, int typeIndex) {
         folderMap.clear();
         folderMap.put(ProjectFolder.FOLDER_NAME, new ProjectFolder(new StringBuilder()));
@@ -230,4 +195,17 @@ public class BTController {
             folderMap.put(SourceCodeFolder.FOLDER_NAME, new SourceCodeFolder(typeIndex));
         }
     }
+
+    private StringBuilder exportFileAndCreateConsole() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(consoleService.exportFile(tomcatpath_tableview.getItems()));
+        sb.append(consoleService.deleteFolder());
+        sb.append(consoleService.copyFile(tomcatpath_tableview.getItems(), folderMap));
+        sb.append(consoleService.createTxt(folderMap));
+        sb.append(consoleService.createZip());
+        sb.append(consoleService.exportFinish());
+        sb.append(consoleService.openFolder());
+        return sb;
+    }
+
 }
