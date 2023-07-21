@@ -29,6 +29,7 @@ public class SearchService extends BTService {
         String[] searchFileNameArray = searchFileNames.replaceAll(".java", ".class").split("\n");
         //解析searchFileNames取得要搜尋的檔案
         return Arrays.stream(searchFileNameArray)
+                .map(searchFileName -> searchFileName.trim())
                 .filter(searchFileName -> searchFileName.matches("^\\w+[-]?\\w+\\.\\w+$"))//過濾掉沒有副檔名，非檔案格式的字串
                 .map(searchFileName -> SearchTool.searchFile(this.IDE, this.searchPath, searchFileName).get(0))//查詢檔案(唯一)
                 .collect(Collectors.collectingAndThen(
