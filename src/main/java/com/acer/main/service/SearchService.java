@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class SearchService extends BTService {
 
@@ -28,10 +29,10 @@ public class SearchService extends BTService {
         //將.java檔的字串換成.class檔
         String[] searchFileNameArray = searchFileNames.replaceAll(".java", ".class").split("\n");
         //解析searchFileNames取得要搜尋的檔案
-        return Arrays.stream(searchFileNameArray)
+        List<ProjectFile> resultList = Arrays.stream(searchFileNameArray)
                 .map(searchFileName -> searchFileName.trim())
-                .filter(searchFileName -> searchFileName.matches("^\\w+[-]?\\w+\\.\\w+$"))//過濾掉沒有副檔名，非檔案格式的字串
-                .map(searchFileName -> SearchTool.searchFile(this.IDE, this.searchPath, searchFileName).get(0))//查詢檔案(唯一)
+                .filter(searchFileName -> searchFileName.matches("^\\w+([-]\\w+)*(\\$\\w+)*\\.\\w+$"))
+                .flatMap(searchFileName -> getProjectFileStream(this.IDE, this.searchPath, searchFileName))
                 .collect(Collectors.collectingAndThen(
                         /**
                          * Collectors.toMap(keyMapper, valueMapper, mergeFunction)
@@ -42,6 +43,27 @@ public class SearchService extends BTService {
                         Collectors.toMap(ProjectFile::getFileName, Function.identity(), (a, b) -> a),
                         map -> new ArrayList<>(map.values())
                 ));
+        return resultList;
+    }
+
+    private Stream<ProjectFile> getProjectFileStream(Property IDE,String searchPath, String searchFileName) {
+        String searchFileNameWithoutExtension = searchFileName.replace(".class","");
+        List<ProjectFile> searchFileList = SearchTool.searchFile(IDE, searchPath, searchFileNameWithoutExtension);
+
+        if (searchFileName.contains(".class")) {
+            List<ProjectFile> relationFileList = new ArrayList<>();
+            System.out.println("嘗試搜尋" + searchFileName + "檔，以及是否有其子類別檔案：");
+            for (ProjectFile pf : searchFileList) {
+                if (pf.getFileType().equals("class")) {
+                    System.out.println("找到Class檔案，將" + pf.getFileName() + "加入到清單中");
+                    relationFileList.add(pf);
+                }
+            }
+            System.out.println("---------------------------------------------------------");
+            return relationFileList.stream();
+        } else {
+            return searchFileList.stream();
+        }
     }
 
     /**
