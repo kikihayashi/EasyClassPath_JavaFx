@@ -7,7 +7,7 @@ import javafx.scene.control.ComboBox;
 
 public class SourceCodeComboBox implements FxmlHandler {
 
-    private final static String[] typeSet = {"同一資料夾", "原專案路徑"};
+    private final static String[] typeSet = {"同一資料夾", "原專案路徑", "以上兩種都要"};
     private ComboBox combobox;
 
     public SourceCodeComboBox(ComboBox combobox) {

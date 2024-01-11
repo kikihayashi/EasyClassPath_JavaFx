@@ -9,11 +9,7 @@ public class ProjectFolder implements Folder {
 
     private static String FILTER_FILE = "java";
 
-    private static StringBuilder tomcatStringBuilder = new StringBuilder();
-
-    public ProjectFolder(StringBuilder stringBuilder) {
-        this.tomcatStringBuilder = stringBuilder;
-    }
+    private static StringBuilder tomcatPathStringBuilder = new StringBuilder();
 
     @Override
     public <T> String create(String parentFolderPath, T projectFile) {
@@ -26,12 +22,16 @@ public class ProjectFolder implements Folder {
             //建立out資料夾及內部資料
             message = FolderTool.createOutputFolder(pf, targetPath);
             //紀錄Tomcat路徑
-            tomcatStringBuilder.append(pf.getTomcatPath() + "\n");
+            saveFileInfo(pf);
         }
         return message;
     }
 
+    private void saveFileInfo(ProjectFile pf) {
+        tomcatPathStringBuilder.append(pf.getTomcatPath() + "\n");
+    }
+
     public String getTomcatPathTxt() {
-        return this.tomcatStringBuilder.toString();
+        return this.tomcatPathStringBuilder.toString();
     }
 }

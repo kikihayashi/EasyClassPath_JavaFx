@@ -10,9 +10,7 @@ import com.acer.main.fxml.menu.FileMenu;
 import com.acer.main.fxml.menu.OtherMenu;
 import com.acer.main.fxml.tableview.RealPathTableFxml;
 import com.acer.main.fxml.tableview.TomcatPathTableFxml;
-import com.acer.main.model.folder.Folder;
-import com.acer.main.model.folder.ProjectFolder;
-import com.acer.main.model.folder.SourceCodeFolder;
+import com.acer.main.model.folder.*;
 import com.acer.main.service.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -139,8 +137,11 @@ public class BTController {
 
     @FXML
     protected void onExportClick(ActionEvent actionEvent) {
-        setSourceCodeOnOff(sourcecode_checkbox.isSelected(), sourcecode_combobox.getSelectionModel().getSelectedIndex());
-        StringBuilder console = exportFileAndCreateConsole();
+        folderMap.clear();
+        setProjectFolder();
+        setCheckListFolder();
+        setSourceCodeFolder(sourcecode_checkbox.isSelected(), sourcecode_combobox.getSelectionModel().getSelectedIndex());
+        StringBuilder console = exportFileAndShowConsole();
         console_textarea.appendText(console.toString());
     }
 
@@ -188,15 +189,38 @@ public class BTController {
         }).handle();
     }
 
-    private void setSourceCodeOnOff(boolean selected, int typeIndex) {
-        folderMap.clear();
-        folderMap.put(ProjectFolder.FOLDER_NAME, new ProjectFolder(new StringBuilder()));
+    private void setCheckListFolder() {
+        folderMap.put(CheckListFolder.FOLDER_NAME, new CheckListFolder());
+    }
+
+    private void setProjectFolder() {
+        folderMap.put(ProjectFolder.FOLDER_NAME, new ProjectFolder());
+    }
+
+    private void setSourceCodeFolder(boolean selected, int typeIndex) {
         if (selected) {
-            folderMap.put(SourceCodeFolder.FOLDER_NAME, new SourceCodeFolder(typeIndex));
+            //輸出原始檔案的路徑
+            switch (typeIndex) {
+                case 0:
+                    //同一資料夾
+                    folderMap.put(SourceCodeTheSameFolder.FOLDER_NAME, new SourceCodeTheSameFolder());
+                    break;
+                case 1:
+                    //原專案路徑
+                    folderMap.put(SourceCodeOriginPathFolder.FOLDER_NAME, new SourceCodeOriginPathFolder());
+                    break;
+                case 2:
+                    //兩者都要
+                    folderMap.put(SourceCodeTheSameFolder.FOLDER_NAME, new SourceCodeTheSameFolder());
+                    folderMap.put(SourceCodeOriginPathFolder.FOLDER_NAME, new SourceCodeOriginPathFolder());
+                    break;
+                default:
+                    throw new IllegalArgumentException();
+            }
         }
     }
 
-    private StringBuilder exportFileAndCreateConsole() {
+    private StringBuilder exportFileAndShowConsole() {
         StringBuilder sb = new StringBuilder();
         sb.append(consoleService.exportFile(tomcatpath_tableview.getItems()));
         sb.append(consoleService.deleteFolder());

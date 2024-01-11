@@ -1,5 +1,11 @@
 package com.acer.main.bean;
 
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 public class ProjectFile {
     private String projectName;
     private String projectPath;
@@ -79,12 +85,39 @@ public class ProjectFile {
         }
     }
 
+    public String getFileSizeByteNumberOnly() {
+        return formatIntegerWithComma((int) fileSize);
+    }
+
+    private static String formatIntegerWithComma(int value) {
+        DecimalFormat decimalFormat = new DecimalFormat("#,###");
+        return decimalFormat.format(value);
+    }
+
     public void setFileSize(long fileSize) {
         this.fileSize = fileSize;
     }
 
     public String getLastModifiedTime() {
         return lastModifiedTime;
+    }
+
+    public String getLastModifiedRocDate() {
+        return getRocDate(lastModifiedTime);
+    }
+
+    private static String getRocDate(String time) {
+        try {
+            Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(time);
+            //將日期轉換為民國年
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            cal.add(Calendar.YEAR, -1911); //減去1911年，即為民國年
+            date = cal.getTime();
+            return new SimpleDateFormat("yyy/MM/dd").format(date);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void setLastModifiedTime(String lastModifiedTime) {

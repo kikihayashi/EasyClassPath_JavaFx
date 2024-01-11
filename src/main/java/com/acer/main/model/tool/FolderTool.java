@@ -33,6 +33,21 @@ public class FolderTool {
         return message;
     }
 
+    public static String createCheckListFolder(String TARGET_PATH) {
+        String message = "";
+        try {
+            //目標檔案位置(包括檔名)
+            Path targetFolder = Paths.get(TARGET_PATH);
+            //建立目標檔案資料夾
+            if (!Files.exists(targetFolder)) {
+                Files.createDirectories(targetFolder);
+            }
+        } catch (IOException e) {
+            message = "[ERROR] 資料夾建立失敗！" + e + "\n";
+        }
+        return message;
+    }
+
     //刪除前一次輸出的母資料夾
     public static String deleteFolder(String folderPath) {
         File folder = new File(folderPath);
