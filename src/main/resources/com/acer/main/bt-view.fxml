@@ -133,6 +133,14 @@
                                           <Insets bottom="5.0" right="5.0" top="5.0" />
                                        </HBox.margin>
                                     </ComboBox>
+                                    <CheckBox fx:id="checklist_checkbox" mnemonicParsing="false" text="產生驗收文件">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets bottom="7.0" left="5.0" right="5.0" top="8.0" />
+                                       </HBox.margin>
+                                    </CheckBox>
                                     </children>
                                  </HBox>
                               <TableView fx:id="tomcatpath_tableview" VBox.vgrow="ALWAYS" />

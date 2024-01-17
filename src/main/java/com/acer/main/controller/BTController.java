@@ -45,6 +45,8 @@ public class BTController {
     @FXML
     private AnchorPane console_anchorpane;
     @FXML
+    private CheckBox checklist_checkbox;
+    @FXML
     private CheckBox sourcecode_checkbox;
     @FXML
     private ComboBox sourcecode_combobox;
@@ -139,7 +141,7 @@ public class BTController {
     protected void onExportClick(ActionEvent actionEvent) {
         folderMap.clear();
         setProjectFolder();
-        setCheckListFolder();
+        setCheckListFolder(checklist_checkbox.isSelected());
         setSourceCodeFolder(sourcecode_checkbox.isSelected(), sourcecode_combobox.getSelectionModel().getSelectedIndex());
         StringBuilder console = exportFileAndShowConsole();
         console_textarea.appendText(console.toString());
@@ -189,8 +191,11 @@ public class BTController {
         }).handle();
     }
 
-    private void setCheckListFolder() {
-        folderMap.put(CheckListFolder.FOLDER_NAME, new CheckListFolder());
+    private void setCheckListFolder(boolean selected) {
+        if (selected) {
+            //輸出驗收文件
+            folderMap.put(CheckListFolder.FOLDER_NAME, new CheckListFolder());
+        }
     }
 
     private void setProjectFolder() {
@@ -199,7 +204,7 @@ public class BTController {
 
     private void setSourceCodeFolder(boolean selected, int typeIndex) {
         if (selected) {
-            //輸出原始檔案的路徑
+            //輸出原始檔案
             switch (typeIndex) {
                 case 0:
                     //同一資料夾
