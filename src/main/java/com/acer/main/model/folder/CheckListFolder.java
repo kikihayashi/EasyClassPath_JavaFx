@@ -9,9 +9,9 @@ public class CheckListFolder implements Folder {
 
     private static String FILTER_FILE = "java";
 
-    private static StringBuilder tomcatPathWithProjectNameStringBuilder = new StringBuilder();
-    private static StringBuilder fileSizeStringBuilder = new StringBuilder();
-    private static StringBuilder lastModifiedTimeStringBuilder = new StringBuilder();
+    private StringBuilder tomcatPathWithProjectNameStringBuilder = new StringBuilder();
+    private StringBuilder fileSizeStringBuilder = new StringBuilder();
+    private StringBuilder lastModifiedTimeStringBuilder = new StringBuilder();
     @Override
     public <T> String create(String parentFolderPath, T projectFile) {
         //建立CheckList資料夾

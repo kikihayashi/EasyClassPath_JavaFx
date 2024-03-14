@@ -9,7 +9,7 @@ public class ProjectFolder implements Folder {
 
     private static String FILTER_FILE = "java";
 
-    private static StringBuilder tomcatPathStringBuilder = new StringBuilder();
+    private StringBuilder tomcatPathStringBuilder = new StringBuilder();
 
     @Override
     public <T> String create(String parentFolderPath, T projectFile) {
